@@ -1,0 +1,270 @@
+# 📜 Certificate Blockchain System – Smart Contract Setup Guide
+
+This guide explains how to install, configure, compile, and deploy the Smart Contract for the Certificate Blockchain System using **Hardhat**.
+
+---
+
+## 🚀 Prerequisites
+
+Make sure the following software is installed on your system:
+
+| Tool    | Version Required              |
+| ------- | ----------------------------- |
+| Node.js | v16 / v18 / v20 (Recommended) |
+| npm     | Latest                        |
+| Git     | Installed                     |
+| Hardhat | v2.22.2                       |
+
+⚠️ **Note:** Hardhat v2 does NOT support Node.js v22.
+If using Node 22, please switch to Node 18 using NVM.
+
+---
+
+## 🛠️ Project Structure
+
+```
+certificate-system/
+ ├── backend/
+ └── blockchain/
+      ├── contracts/
+      │    └── Certificate.sol
+      ├── scripts/
+      │    └── deploy.js
+      ├── artifacts/
+      ├── hardhat.config.cjs
+      └── package.json
+```
+
+---
+
+## 📦 Installation Steps
+
+Navigate to blockchain folder:
+
+```bash
+cd certificate-system/blockchain
+```
+
+---
+
+### 🔹 Initialize Node Project
+
+```bash
+npm init -y
+```
+
+---
+
+### 🔹 Install Hardhat v2 (Stable)
+
+```bash
+npm install --save-dev hardhat@2.22.2
+```
+
+---
+
+### 🔹 Install Ethers Plugin
+
+```bash
+npm install --save-dev @nomiclabs/hardhat-ethers ethers@5
+```
+
+---
+
+## ⚙️ Hardhat Configuration
+
+Create file:
+
+```
+hardhat.config.cjs
+```
+
+Paste the following:
+
+```js
+require("@nomiclabs/hardhat-ethers");
+
+module.exports = {
+  solidity: "0.8.20",
+  networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545"
+    }
+  }
+};
+```
+
+---
+
+## 📄 Smart Contract
+
+Place your contract file inside:
+
+```
+contracts/Certificate.sol
+```
+
+Example:
+
+```solidity
+contract CertificateContract {
+    struct Certificate {
+        string studentName;
+        string courseName;
+        string issueDate;
+        string certificateHash;
+        bool isValid;
+    }
+}
+```
+
+---
+
+## 🧱 Compile Smart Contract
+
+Run:
+
+```bash
+npx hardhat compile
+```
+
+After successful compilation, ABI will be generated at:
+
+```
+artifacts/contracts/Certificate.sol/CertificateContract.json
+```
+
+---
+
+## 🛰️ Start Local Blockchain Network
+
+Run the following command in a terminal:
+
+```bash
+npx hardhat node
+```
+
+This will start a local Ethereum network at:
+
+```
+http://127.0.0.1:8545
+```
+
+⚠️ Keep this terminal running.
+
+---
+
+## 🚀 Deploy Smart Contract
+
+Create file:
+
+```
+scripts/deploy.js
+```
+
+Paste:
+
+```js
+const hre = require("hardhat");
+
+async function main() {
+  const Certificate = await hre.ethers.getContractFactory("CertificateContract");
+  const certificate = await Certificate.deploy();
+
+  await certificate.deployed();
+
+  console.log("Certificate deployed to:", certificate.address);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
+```
+
+---
+
+### Deploy Command
+
+Open a new terminal and run:
+
+```bash
+npx hardhat run scripts/deploy.js --network localhost
+```
+
+Output:
+
+```
+Certificate deployed to: 0xABC123....
+```
+
+Copy the deployed contract address.
+
+---
+
+## 🔗 Connect with Backend
+
+### Copy ABI file:
+
+```
+blockchain/artifacts/contracts/Certificate.sol/CertificateContract.json
+```
+
+Paste into:
+
+```
+backend/contracts/Certificate.json
+```
+
+---
+
+### Update Backend `.env`
+
+```env
+CONTRACT_ADDRESS=0xDEPLOYED_CONTRACT_ADDRESS
+ETHEREUM_NODE_URL=http://127.0.0.1:8545
+```
+
+---
+
+## ▶️ Run Backend Server
+
+Navigate to backend folder:
+
+```bash
+cd ../backend
+node server.js
+```
+
+---
+
+## ✅ Smart Contract is now connected with Backend
+
+You can now:
+
+* Issue Certificates
+* Validate Certificates
+* Store Certificate Hash on Blockchain
+* Verify Certificate Authenticity
+
+---
+
+## 🧾 Important Notes
+
+* Do NOT stop Hardhat node while backend is running.
+* Always redeploy contract after restarting Hardhat node.
+* Update CONTRACT_ADDRESS in `.env` after every redeployment.
+
+---
+
+## 🛠️ Troubleshooting
+
+| Issue              | Solution                         |
+| ------------------ | -------------------------------- |
+| Artifact not found | Run `npx hardhat compile`        |
+| Invalid Address    | Check CONTRACT_ADDRESS in `.env` |
+| Connection Refused | Ensure Hardhat node is running   |
+
+---
+
+🎉 You have successfully set up Blockchain for Certificate System!
