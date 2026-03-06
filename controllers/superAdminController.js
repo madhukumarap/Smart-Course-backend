@@ -186,6 +186,7 @@ exports.createAdmin = async (req, res) => {
             name,
             email,
             password,
+            role: 'admin', // add this
             roleId: adminRole._id,
             phone,
             department,

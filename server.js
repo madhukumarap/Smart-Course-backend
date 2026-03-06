@@ -29,7 +29,8 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
 app.use('/api/verifier', require('./routes/verifierRoutes'));
 app.use('/api/super-admin', require('./routes/superAdminRoutes'));
-
+// Add with other routes
+app.use('/api/courses', require('./routes/courseRoutes'));
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);

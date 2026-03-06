@@ -20,15 +20,16 @@ const userSchema = new mongoose.Schema({
         minlength: 6
     },
     // Keep old role field for backward compatibility
-    role: {
-        type: String,
-        enum: ['admin', 'student', 'verifier', 'super_admin'],
-        default: 'student'
-    },
+    // role: {
+    //     type: String,
+    //     enum: ['admin', 'student', 'verifier', 'super_admin'],
+    //     default: 'student'
+    // },
     // New roleId field for role-based access control
     roleId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Role'
+        ref: 'Role',
+    required: true
     },
     walletAddress: {
         type: String,
